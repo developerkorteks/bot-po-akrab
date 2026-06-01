@@ -1,0 +1,10 @@
+{
+  "khfy_api_key":       "API_KEY_KHFY_KAMU",
+  "telegram_token":     "BOT_TOKEN_DARI_BOTFATHER",
+  "telegram_chat_id":   "CHAT_ID_KAMU",
+  "proxy_addr":         "http://127.0.0.1:62080",
+  "poll_interval_sec":  5,
+  "listen_addr":        ":8090",
+  "db_path":            "preorder.db",
+  "max_retries":        6
+}

@@ -1,0 +1,17 @@
+# Secret — JANGAN di-commit (berisi API key & token Telegram)
+config.json
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# Binary (dynamically named after module)
+preorder-bot
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store

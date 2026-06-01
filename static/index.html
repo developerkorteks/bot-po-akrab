@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pre-order Bot — Akrab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">PreOrder Bot</span>
+    </div>
+    <nav>
+      <a href="#" class="nav-item active" data-tab="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-tab="products">
+        <span class="nav-icon">📦</span> Produk
+      </a>
+      <a href="#" class="nav-item" data-tab="preorders">
+        <span class="nav-icon">🛒</span> Pre-order
+      </a>
+      <a href="#" class="nav-item" data-tab="logs">
+        <span class="nav-icon">📋</span> Aktivitas
+      </a>
+    </nav>
+  </div>
+
+  <div class="main">
+    <header class="topbar">
+      <h1 id="page-title">Dashboard</h1>
+      <div class="topbar-right">
+        <span id="saldo-info" style="font-size:12px;color:var(--accent2);margin-right:12px"></span>
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Connecting...</span>
+      </div>
+    </header>
+
+    <!-- DASHBOARD TAB -->
+    <div class="tab-content active" id="tab-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card pending">
+          <div class="stat-num" id="stat-pending">0</div>
+          <div class="stat-label">Menunggu</div>
+        </div>
+        <div class="stat-card buying">
+          <div class="stat-num" id="stat-buying">0</div>
+          <div class="stat-label">Sedang Beli</div>
+        </div>
+        <div class="stat-card success">
+          <div class="stat-num" id="stat-success">0</div>
+          <div class="stat-label">Sukses</div>
+        </div>
+        <div class="stat-card failed">
+          <div class="stat-num" id="stat-failed">0</div>
+          <div class="stat-label">Gagal</div>
+        </div>
+        <div class="stat-card retry">
+          <div class="stat-num" id="stat-retry">0</div>
+          <div class="stat-label">Retry</div>
+        </div>
+        <div class="stat-card available">
+          <div class="stat-num" id="stat-available">0</div>
+          <div class="stat-label">Produk Tersedia</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Aktivitas Terbaru</h2>
+          <button class="btn-sm" onclick="loadLogs()">↻ Refresh</button>
+        </div>
+        <div id="dash-logs" class="log-list"></div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS TAB -->
+    <div class="tab-content" id="tab-products">
+      <div class="card">
+        <div class="card-header">
+          <h2>Daftar Produk Akrab</h2>
+          <div class="search-wrap">
+            <input type="text" id="product-search" placeholder="Cari produk..." oninput="filterProducts()">
+          </div>
+        </div>
+        <div class="filter-bar">
+          <button class="filter-btn active" data-filter="all" onclick="setFilter(this,'all')">Semua</button>
+          <button class="filter-btn" data-filter="available" onclick="setFilter(this,'available')">Tersedia</button>
+          <button class="filter-btn" data-filter="unavailable" onclick="setFilter(this,'unavailable')">Kosong</button>
+        </div>
+        <table class="table" id="products-table">
+          <thead>
+            <tr>
+              <th>Kode</th>
+              <th>Nama Produk</th>
+              <th>Harga</th>
+              <th>Status</th>
+              <th>Ghost</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="products-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PREORDERS TAB -->
+    <div class="tab-content" id="tab-preorders">
+      <div class="card">
+        <div class="card-header">
+          <h2>Tambah Pre-order</h2>
+        </div>
+        <form class="form-inline" onsubmit="createPreorder(event)">
+          <div class="form-group">
+            <label>Produk</label>
+            <select id="po-produk" required onchange="onProdukChange()">
+              <option value="" disabled selected>— Pilih produk —</option>
+            </select>
+            <span id="po-produk-info" style="font-size:11px;margin-top:3px"></span>
+          </div>
+          <div class="form-group">
+            <label>Nomor Tujuan</label>
+            <input type="text" id="po-tujuan" placeholder="08xxxxxxxxxx" required>
+          </div>
+          <button type="submit" class="btn-primary">+ Tambah Pre-order</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Daftar Pre-order</h2>
+          <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all" onclick="setPOFilter(this,'all')">Semua</button>
+            <button class="filter-btn" data-filter="pending" onclick="setPOFilter(this,'pending')">Pending</button>
+            <button class="filter-btn" data-filter="buying" onclick="setPOFilter(this,'buying')">Buying</button>
+            <button class="filter-btn" data-filter="retry" onclick="setPOFilter(this,'retry')">Retry</button>
+            <button class="filter-btn" data-filter="success" onclick="setPOFilter(this,'success')">Sukses</button>
+            <button class="filter-btn" data-filter="failed" onclick="setPOFilter(this,'failed')">Gagal</button>
+          </div>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Produk</th>
+              <th>Tujuan</th>
+              <th>Status</th>
+              <th>Percobaan</th>
+              <th>Dibuat</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="preorders-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LOGS TAB -->
+    <div class="tab-content" id="tab-logs">
+      <div class="card">
+        <div class="card-header">
+          <h2>Log Aktivitas</h2>
+          <button class="btn-sm" onclick="loadLogs()">↻ Refresh</button>
+        </div>
+        <div id="logs-list" class="log-list"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL Pre-order dari Produk -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Tambah Pre-order</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="modal-produk-info"></p>
+        <div class="form-group">
+          <label>Nomor Tujuan</label>
+          <input type="text" id="modal-tujuan" placeholder="08xxxxxxxxxx">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline" onclick="closeModal()">Batal</button>
+        <button class="btn-primary" onclick="submitModalPreorder()">Pre-order Sekarang</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
