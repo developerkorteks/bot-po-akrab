@@ -75,3 +75,44 @@ pm2 logs preorder-bot
 | GET | `/` | web dashboard (static) |
 
 Dashboard: buka `http://127.0.0.1:8090` (atau via SSH tunnel kalau di VPS).
+
+## Multi-provider Layout
+
+Arsitektur baru mendukung 3 service terpisah:
+
+```text
+KHFY backend (existing)   : expose API lama + webhook khfy
+ICS backend (baru)        : mirror flow KHFY untuk API ICS + webhook ics
+Aggregator frontend (baru): UI tunggal + API agregasi untuk keduanya
+```
+
+Rekomendasi port:
+
+| Service | Port | Catatan |
+|---------|------|---------|
+| KHFY backend | `:8089` | ubah `listen_addr` di `config.json` agar tidak bentrok |
+| ICS backend | `:8091` | config `cmd/ics-backend/config.example.json` |
+| Aggregator frontend | `:8090` | config `cmd/aggregator/config.example.json` |
+
+### Menjalankan KHFY backend
+
+```bash
+CGO_ENABLED=0 go build -o preorder-bot .
+./preorder-bot -config config.json
+```
+
+### Menjalankan ICS backend
+
+```bash
+cp cmd/ics-backend/config.example.json config.ics.json
+go run ./cmd/ics-backend -config config.ics.json
+```
+
+### Menjalankan Aggregator frontend
+
+```bash
+cp cmd/aggregator/config.example.json config.aggregator.json
+go run ./cmd/aggregator -config config.aggregator.json
+```
+
+Aggregator akan menampilkan satu dashboard untuk provider `KHFY` dan `ICS`, dan melakukan routing create/cancel preorder ke backend provider masing-masing.

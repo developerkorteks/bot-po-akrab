@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pre-order Bot Multi Provider</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-copy">
+          <span class="logo-kicker">Control Center</span>
+          <span class="logo-text">PreOrder Hub</span>
+        </div>
+      </div>
+      <nav>
+        <a href="#" class="nav-item active" data-tab="dashboard"><span>Dashboard</span></a>
+        <a href="#" class="nav-item" data-tab="products"><span>Produk</span></a>
+        <a href="#" class="nav-item" data-tab="preorders"><span>Pre-order</span></a>
+        <a href="#" class="nav-item" data-tab="logs"><span>Aktivitas</span></a>
+      </nav>
+      <div class="sidebar-foot">
+        <span class="sidebar-foot-label">Realtime multi-provider monitor</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-copy">
+          <span class="eyebrow">Reseller Automation Dashboard</span>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+        <div class="topbar-right">
+          <span id="status-summary" class="status-banner">Checking provider...</span>
+        </div>
+      </header>
+
+      <div class="content-wrap">
+        <div class="tab-content active" id="tab-dashboard">
+          <section class="hero-panel">
+            <div class="hero-copy">
+              <span class="hero-kicker">Operations View</span>
+              <h2>Monitor status, inventory, dan performa order dari dua provider dalam satu tempat.</h2>
+            </div>
+            <div class="toolbar toolbar-elevated">
+              <label class="toolbar-label" for="provider-filter">Provider</label>
+              <select id="provider-filter" onchange="onProviderChange()">
+                <option value="all">Semua Provider</option>
+                <option value="khfy">KHFY</option>
+                <option value="ics">ICS</option>
+              </select>
+            </div>
+          </section>
+
+          <section class="provider-grid" id="provider-cards"></section>
+
+          <section class="card feature-card">
+            <div class="card-header">
+              <div>
+                <span class="section-kicker">Live Feed</span>
+                <h2>Aktivitas Terbaru</h2>
+              </div>
+              <button class="btn-sm" onclick="loadLogs()">Refresh</button>
+            </div>
+            <div id="dash-logs" class="log-list"></div>
+          </section>
+        </div>
+
+        <div class="tab-content" id="tab-products">
+          <section class="card feature-card">
+            <div class="card-header">
+              <div>
+                <span class="section-kicker">Catalog View</span>
+                <h2>Daftar Produk</h2>
+              </div>
+              <div class="search-wrap">
+                <input type="text" id="product-search" placeholder="Cari kode atau nama produk..." oninput="renderProducts()">
+              </div>
+            </div>
+            <div class="table-shell">
+              <table class="table">
+                <thead><tr><th>Provider</th><th>Kode</th><th>Nama Produk</th><th>Harga</th><th>Status</th><th>Aksi</th></tr></thead>
+                <tbody id="products-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <div class="tab-content" id="tab-preorders">
+          <section class="card feature-card">
+            <div class="card-header">
+              <div>
+                <span class="section-kicker">Create Queue</span>
+                <h2>Tambah Pre-order</h2>
+              </div>
+            </div>
+            <form class="form-inline" onsubmit="createPreorder(event)">
+              <div class="form-group">
+                <label>Provider</label>
+                <select id="po-provider" onchange="populateProdukDropdown()">
+                  <option value="khfy">KHFY</option>
+                  <option value="ics">ICS</option>
+                </select>
+              </div>
+              <div class="form-group form-group-wide">
+                <label>Produk</label>
+                <select id="po-produk" required></select>
+              </div>
+              <div class="form-group">
+                <label>Nomor Tujuan</label>
+                <input type="text" id="po-tujuan" placeholder="08xxxxxxxxxx" required>
+              </div>
+              <button type="submit" class="btn-primary">+ Tambah Pre-order</button>
+            </form>
+          </section>
+
+          <section class="card feature-card">
+            <div class="card-header">
+              <div>
+                <span class="section-kicker">Execution Queue</span>
+                <h2>Daftar Pre-order</h2>
+              </div>
+            </div>
+            <div class="table-shell">
+              <table class="table">
+                <thead><tr><th>Provider</th><th>Produk</th><th>Tujuan</th><th>Status</th><th>Percobaan</th><th>Aksi</th></tr></thead>
+                <tbody id="preorders-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <div class="tab-content" id="tab-logs">
+          <section class="card feature-card">
+            <div class="card-header">
+              <div>
+                <span class="section-kicker">Audit Trail</span>
+                <h2>Log Aktivitas</h2>
+              </div>
+              <button class="btn-sm" onclick="loadLogs()">Refresh</button>
+            </div>
+            <div id="logs-list" class="log-list"></div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

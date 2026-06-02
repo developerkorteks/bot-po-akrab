@@ -24,6 +24,8 @@ func NewAPIServer(cfg *Config, db *sql.DB, client *KhfyClient) *APIServer {
 }
 
 func (s *APIServer) routes() {
+	s.mux.HandleFunc("/api/health", s.handleHealth)
+	s.mux.HandleFunc("/api/provider", s.handleProvider)
 	s.mux.HandleFunc("/api/products", s.handleProducts)
 	s.mux.HandleFunc("/api/preorders", s.handlePreorders)
 	s.mux.HandleFunc("/api/preorders/", s.handlePreorderDelete)
@@ -33,6 +35,21 @@ func (s *APIServer) routes() {
 	s.mux.HandleFunc("/api/saldo", s.handleSaldo)
 	s.mux.HandleFunc("/webhook/khfy", s.handleWebhookKhfy)
 	s.mux.Handle("/", http.FileServer(http.Dir("static")))
+}
+
+func (s *APIServer) handleHealth(w http.ResponseWriter, r *http.Request) {
+	jsonResp(w, 200, map[string]any{
+		"ok":       true,
+		"provider": "khfy",
+		"service":  "khfy-backend",
+	})
+}
+
+func (s *APIServer) handleProvider(w http.ResponseWriter, r *http.Request) {
+	jsonResp(w, 200, map[string]string{
+		"provider": "khfy",
+		"service":  "khfy-backend",
+	})
 }
 
 func (s *APIServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {

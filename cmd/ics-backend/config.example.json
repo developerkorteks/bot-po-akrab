@@ -1,0 +1,10 @@
+{
+  "ics_secret_key": "ICS_SECRET_KEY_KAMU",
+  "telegram_token": "BOT_TOKEN_DARI_BOTFATHER",
+  "telegram_chat_id": "CHAT_ID_KAMU",
+  "poll_interval_sec": 5,
+  "listen_addr": ":8091",
+  "db_path": "ics-preorder.db",
+  "max_retries": 6,
+  "base_url": "https://api.ics-store.my.id/api/reseller"
+}

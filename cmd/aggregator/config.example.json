@@ -1,0 +1,5 @@
+{
+  "listen_addr": ":8090",
+  "khfy_base_url": "http://127.0.0.1:8089",
+  "ics_base_url": "http://127.0.0.1:8091"
+}
